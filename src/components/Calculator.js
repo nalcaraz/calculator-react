@@ -20,29 +20,31 @@ const Calculator = () => {
 
     const [action, setAction] = useState(null);
     const [isAction, setIsAction] = useState(false);
-    const [display, setDisplay] = useState(null);
+    const [display, setDisplay] = useState("");
+    const [result, setResult] = useState("");
     const [runningTotal, setRunningTotal] = useState(1);
     const [isFinalResult, setIsFinalResult] = useState(false);
 
-    useEffect(() => {
+    function performAction(actionType) {
         setIsAction(true);
+
         // eslint-disable-next-line default-case
-        switch (action) {
+        switch (actionType) {
             case "multiply":
-                setDisplay("x");
-                setRunningTotal(number1 * number2);
+                // setDisplay("x");
+                setResult(number1 * number2);
                 break;
             case "divide":
-                setRunningTotal(number1 / number2);
+                setResult(number1 / number2);
                 break;
             case "add":
-                setRunningTotal(number1 + number2);
+                setResult(number1 + number2);
                 break;
             case "subtract":
-                setRunningTotal(number1 - number2);
+                setResult(number1 - number2);
                 break;
             case "equals":
-                setIsFinalResult(true);
+                setResult(result);
                 //  setRunningTotal(number1 * number2);
                 setNumber1("");
                 setNumber2("");
@@ -52,45 +54,83 @@ const Calculator = () => {
             default:
                 break;
         }
-    }, [action]);
+        //setNumber1(result);
+    }
+
+    // useEffect(() => {
+    //     setIsNumber(true);
+    //     setDisplay(number1);
+
+    //     // setDisplay(runningTotal)
+    // }, [number1]);
+    // useEffect(() => {
+    //     setIsNumber(true);
+    //     setDisplay(number2);
+
+    //     // setDisplay(runningTotal)
+    // }, [number2]);
 
     useEffect(() => {
-        setIsNumber(true);
-        setDisplay(number1);
-
-        // setDisplay(runningTotal)
-    }, [number1]);
-    useEffect(() => {
-        setIsNumber(true);
-        setDisplay(number2);
-
-        // setDisplay(runningTotal)
-    }, [number2]);
-
-    useEffect(() => {
-        if (isFinalResult) setDisplay(runningTotal);
+        if (result !== "") setResult(result);
         setIsFinalResult(false);
         setRunningTotal(1);
-    }, [isFinalResult]);
+    }, [result]);
 
     function handleAction(e) {
         const type = e.target.value;
+        if (action) performAction(type);
         setAction(type);
+        setNumber1(result);
+        //  setResult("");
+        console.log(action);
+
+        switch (type) {
+            case "multiply":
+                console.log(type);
+                if (type !== action) setDisplay(`${display} * `);
+
+                break;
+            case "divide":
+                setDisplay(`${display} / `);
+                break;
+            case "add":
+                setDisplay(`${display} + `);
+                break;
+            case "subtract":
+                setDisplay(`${display} - `);
+                break;
+            case "equals":
+                // setIsFinalResult(true);
+                // //  setRunningTotal(number1 * number2);
+                // setNumber1("");
+                // setNumber2("");
+                // setRunningTotal(null)
+
+                break;
+            default:
+                break;
+        }
+
+        // setDisplay(type);
     }
 
     function handleNumber(e) {
-        const number = e.target.value;
-        console.log("number", number);
-        if (runningTotal) {
-            setNumber2(`${number2}${number}`);
-            //setNumber1(runningTotal);
-        } else {
-            setNumber1(`${number1}${number}`);
-        }
+        const value = e.target.value;
+
+        setDisplay(`${display}${value}`);
+        setResult(`${result}${value}`);
+        // console.log("number", number);
+        // if (runningTotal) {
+        //     setNumber2(`${number2}${number}`);
+        //     //setNumber1(runningTotal);
+        // } else {
+        //     setNumber1(`${number1}${number}`);
+        // }
     }
 
     function handleClear() {
         setDisplay("");
+        setResult("");
         setIsAction(false);
         setIsNumber(true);
         setNumber1("");
@@ -100,7 +140,7 @@ const Calculator = () => {
     return (
         <Fragment>
             <Display>{display}</Display>
-            <Display>{action}</Display>
+            <Display>{result}</Display>
             <div>
                 <NumberButton onClick={handleNumber} value={1}>
                     1
